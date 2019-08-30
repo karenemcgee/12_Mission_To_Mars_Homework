@@ -11,11 +11,11 @@ def scrape_all():
     news_title, news_p = scrape_news(browser)
     img_url = scrape_image(browser)
     mars_weather = scrape_weather(browser)
-    facts = scrape_facts(browser)
+    facts = scrape_facts()
     hemispheres_list = scrape_hemispheres(browser)
 
     data = {"news_title": news_title,
-            "news_paragraph": news_p,
+            "news_p": news_p,
             "featured_image": img_url,
             "weather": mars_weather,
             "facts": facts,
@@ -38,11 +38,11 @@ def scrape_news(browser):
 
     # scrape news title
     news_title = news_soup.body.find("div", class_='content_title').text
-    #news_title
+    news_title
 
     # scrape paragraph text
     news_p = news_soup.body.find("div", class_="article_teaser_body").text
-    #news_p
+    news_p
 
     return news_title, news_p
 
@@ -55,8 +55,6 @@ def scrape_image(browser):
     browser.visit(url_jpl)
 
     time.sleep(1)
-
-    #browser.is_element_present_by_text("more info", wait_time=1.0)
 
     # click to see full image
     full_image_button = browser.find_by_id("full_image")
@@ -73,7 +71,7 @@ def scrape_image(browser):
     featured_image_url = url_jpl + image_url
     featured_image_url
 
-    return image_url
+    return featured_image_url
 
 
 ##### MARS WEATHER #####
@@ -105,7 +103,7 @@ def scrape_facts(browser):
     facts_df.set_index("Fact", inplace=True)
     #facts_df
 
-    return facts_df.to_html()
+    return facts_df.to_html(classes="table table-striped")
 
 
 ##### MARS HEMISPHERES #####
