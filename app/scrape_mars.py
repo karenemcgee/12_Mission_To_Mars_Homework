@@ -11,7 +11,7 @@ def scrape_all():
     news_title, news_p = scrape_news(browser)
     img_url = scrape_image(browser)
     mars_weather = scrape_weather(browser)
-    facts = scrape_facts()
+    facts = scrape_facts(browser)
     hemispheres_list = scrape_hemispheres(browser)
 
     data = {"news_title": news_title,
@@ -56,9 +56,13 @@ def scrape_image(browser):
 
     time.sleep(1)
 
+    #browser.is_element_present_by_text("more info", wait_time=1.0)
+
     # click to see full image
     full_image_button = browser.find_by_id("full_image")
     full_image_button.click()
+
+    time.sleep(1)
 
     # parse full image page into soup
     html_image = browser.html
