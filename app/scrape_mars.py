@@ -4,11 +4,24 @@ from bs4 import BeautifulSoup as bs
 import time
 import pandas as pd
 
-# initialize browser
-def init_browser():
+def scrape_all():
     executable_path = {"executable_path": "/usr/local/bin/chromedriver"}
     browser = Browser("chrome", **executable_path, headless=False)
 
+    news_title, news_p = scrape_news(browser)
+    img_url = scrape_image(browser)
+    mars_weather = scrape_weather(browser)
+    facts = scrape_facts()
+    hemispheres_list = scrape_hemispheres(browser)
+
+    data = {"news_title": news_title,
+            "news_paragraph": news_p,
+            "featured_image": img_url,
+            "weather": mars_weather,
+            "facts": facts,
+            "hemispheres": hemispheres_list}
+    browser.quit()
+    return data 
 
 ##### NASA MARS NEWS #####
 
@@ -86,7 +99,7 @@ def scrape_facts(browser):
     facts_df = pd.read_html("https://space-facts.com/mars/")[1]
     facts_df.columns = ["Fact", "Measurement"]
     facts_df.set_index("Fact", inplace=True)
-    facts_df
+    #facts_df
 
     return facts_df.to_html()
 
@@ -123,3 +136,7 @@ def scrape_hemispheres(browser):
         
     return hemispheres_list
 
+
+
+if __name__ == "__main__":
+    print(scrape_all())
