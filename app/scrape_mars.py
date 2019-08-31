@@ -9,17 +9,13 @@ def scrape_all():
     browser = Browser("chrome", **executable_path, headless=False)
 
     news_title, news_p = scrape_news(browser)
-    img_url = scrape_image(browser)
-    mars_weather = scrape_weather(browser)
-    facts = scrape_facts()
-    hemispheres_list = scrape_hemispheres(browser)
 
     data = {"news_title": news_title,
             "news_p": news_p,
-            "featured_image": img_url,
-            "weather": mars_weather,
-            "facts": facts,
-            "hemispheres": hemispheres_list}
+            "featured_image": scrape_image(browser),
+            "weather": scrape_weather(browser),
+            "facts": scrape_facts(browser),
+            "hemispheres": scrape_hemispheres(browser)}
     browser.quit()
     return data 
 
@@ -62,14 +58,22 @@ def scrape_image(browser):
 
     time.sleep(1)
 
+    browser.is_element_present_by_text("more info", wait_time=0.5)
+    more_info = browser.find_link_by_partial_text("more info")
+    more_info.click()
+
+    time.sleep(1)
+
     # parse full image page into soup
     html_image = browser.html
     image_soup = bs(html_image, "html.parser")
 
+    image = image_soup.select_one("figure.lede a img")
+    image_url = image.get("src")
+
     # find image jpg and add to url
-    image_url = image_soup.find("img", class_="fancybox-image")["src"]
-    featured_image_url = url_jpl + image_url
-    featured_image_url
+    #image_url = image_soup.find("img", class_="fancybox-image")["src"]
+    featured_image_url = f"https://www.jpl.nasa.gov{img_url_rel}"
 
     return featured_image_url
 
